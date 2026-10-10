@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>シェリー入門 — Sherry</title>
+<style>
+:root{
+  --bg:#faf6ef; --card:#ffffff; --ink:#2b211b; --sub:#6e5f55;
+  --main:#7a4a0c; --main2:#9a6418; --gold:#c08a3e; --gold-l:#f3e6cf;
+  --line:#e7dccb; --chip:#f6efe3; --shadow:0 4px 18px rgba(80,40,10,.08);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:"Hiragino Kaku Gothic ProN","Noto Sans JP","Yu Gothic",Meiryo,sans-serif;background:var(--bg);color:var(--ink);line-height:1.8;font-size:15px}
+.serif{font-family:"Hiragino Mincho ProN","Yu Mincho","Noto Serif JP",serif}
+a{color:var(--main2)}
+/* header */
+header.hero{background:linear-gradient(160deg,#2e1c04 0%,#7a4a0c 55%,#c08a2e 100%);color:#fff;text-align:center;padding:44px 20px 36px}
+.hero .emo{font-size:28px;letter-spacing:10px}
+.hero h1{font-size:30px;margin:10px 0 4px;letter-spacing:.06em}
+.hero .tag{color:#f3d9a8;font-size:14px;letter-spacing:.2em}
+.hero .lead{margin-top:14px;font-size:13px;opacity:.9}
+/* nav */
+nav.tabs{position:sticky;top:0;z-index:10;background:rgba(250,246,239,.96);backdrop-filter:blur(6px);border-bottom:1px solid var(--line);overflow-x:auto;white-space:nowrap;-webkit-overflow-scrolling:touch}
+nav.tabs a{display:inline-block;padding:11px 13px;font-size:13px;color:var(--sub);text-decoration:none;border-bottom:3px solid transparent}
+nav.tabs a.on{color:var(--main);border-bottom-color:var(--gold);font-weight:700}
+main{max-width:760px;margin:0 auto;padding:22px 16px 60px}
+.page{scroll-margin-top:52px}
+@keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+/* cards */
+.card{background:var(--card);border-radius:16px;box-shadow:var(--shadow);padding:22px 20px;margin-bottom:18px;border:1px solid var(--line)}
+.no{display:inline-block;font-size:12px;color:#fff;background:var(--main);border-radius:999px;padding:2px 12px;letter-spacing:.08em}
+.ttl{font-size:22px;color:var(--main);margin:10px 0 2px;line-height:1.4}
+.en{font-size:13px;color:var(--gold);letter-spacing:.06em}
+.intro{margin-top:10px;color:var(--sub);font-size:14px}
+h3.sec{font-size:16px;color:var(--main);margin:22px 0 10px;padding-bottom:6px;border-bottom:1px dashed var(--line)}
+.kv{display:grid;grid-template-columns:auto 1fr;gap:6px 12px;font-size:14px}
+.kv b{color:var(--main2);white-space:nowrap}
+ul.dot{list-style:none;font-size:14px}
+ul.dot li{position:relative;padding-left:16px;margin:4px 0}
+ul.dot li::before{content:"";position:absolute;left:2px;top:.75em;width:6px;height:6px;border-radius:50%;background:var(--gold)}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0}
+.chip{background:var(--chip);border:1px solid var(--line);border-radius:999px;padding:2px 12px;font-size:13px}
+.note{background:var(--gold-l);border-left:4px solid var(--gold);border-radius:8px;padding:10px 14px;font-size:13.5px;margin:12px 0}
+.note.sub{background:#f4f1ec;border-left-color:#b9a99a;color:var(--sub)}
+.big{font-size:17px;font-weight:700;color:var(--main);line-height:1.6}
+.emorow{font-size:22px;letter-spacing:4px;margin-bottom:4px}
+.foot{text-align:right;font-size:12px;color:var(--sub);margin-top:14px}
+/* tables */
+.tw{overflow-x:auto;margin:8px 0}
+table{border-collapse:collapse;width:100%;font-size:13px;min-width:520px}
+th,td{border-bottom:1px solid var(--line);padding:8px 8px;text-align:left;vertical-align:top}
+th{background:var(--chip);color:var(--main);font-weight:700;white-space:nowrap}
+/* timeline */
+.tl{border-left:2px solid var(--gold);margin-left:8px;padding-left:16px}
+.tl div{position:relative;margin-bottom:12px;font-size:14px}
+.tl div::before{content:"";position:absolute;left:-23px;top:.55em;width:12px;height:12px;border-radius:50%;background:#fff;border:2px solid var(--main)}
+.tl b{color:var(--main2);display:block;font-size:13px}
+/* list (index) */
+.list a{display:flex;gap:12px;align-items:center;text-decoration:none;color:var(--ink);padding:12px 4px;border-bottom:1px solid var(--line)}
+.list .n{flex:0 0 30px;height:30px;border-radius:50%;background:var(--main);color:#fff;display:flex;align-items:center;justify-content:center;font-size:13px}
+.list .t{font-weight:700}
+.list .d{font-size:12px;color:var(--sub)}
+.badge{font-size:11px;border-radius:6px;padding:1px 8px;background:var(--gold-l);color:var(--main2);margin-right:6px}
+/* compare */
+.vs{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.vs .box{border:1px solid var(--line);border-radius:12px;padding:14px;background:#fffdf9}
+.vs .box h4{color:var(--main);font-size:15px;margin-bottom:6px}
+/* sweetness scale */
+.scale{display:flex;border-radius:10px;overflow:hidden;margin:10px 0;font-size:12px;text-align:center;color:#fff}
+.scale div{flex:1;padding:8px 2px;line-height:1.4}
+/* variety mini-card */
+.vc{border:1px solid var(--line);border-radius:12px;padding:14px;margin-bottom:12px;background:#fffdf9}
+.vc h4{color:var(--main);font-size:16px}
+.vc .en{margin-left:6px}
+.pair{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.pair div{background:var(--chip);border-radius:10px;padding:10px 12px;font-size:13px}
+.pair b{display:block;color:var(--main2)}
+.nav2{display:flex;justify-content:space-between;margin-top:8px}
+.nav2 a{font-size:13px;text-decoration:none;background:#fff;border:1px solid var(--line);border-radius:999px;padding:6px 14px;color:var(--main)}
+.home{display:block;text-align:center;margin:26px auto 0;font-size:14px;text-decoration:none;color:var(--main)}
+footer{text-align:center;font-size:12px;color:var(--sub);padding:20px}
+@media(max-width:560px){.vs,.pair{grid-template-columns:1fr}.ttl{font-size:20px}.hero h1{font-size:26px}}
+</style>
+</head>
+<body>
+<header class="hero" id="top">
+  <div class="emo">☀️🥂</div>
+  <h1 class="serif">シェリー入門</h1>
+  <div class="tag serif">— Sherry —</div>
+  <div class="lead">アンダルシアが生む辛口〜極甘口の酒精強化ワイン × 16のテーマ ／ WSET D5 第3章</div>
+</header>
+<nav class="tabs" id="tabs"></nav>
+<main>
+
+<section class="page" id="winelist" data-tab="🍷リスト">
+  <div class="card">
+    <div class="ttl serif">🍷 本日の学習リスト</div>
+    <div class="intro">出典：WSET Level 4 Diploma D5 Fortified Wines（2025年8月版）第3章 Sherry（p.10–30）。「補足」はテキスト外の一般的な説明です。</div>
+    <div class="list" style="margin-top:10px">
+      <a href="#w1"><span class="n">1</span><span><span class="badge">概要</span><span class="t">ひとことで言うと？</span><br><span class="d">シェリーの正体と2つの熟成</span></span></a>
+      <a href="#w2"><span class="n">2</span><span><span class="badge">歴史</span><span class="t">3,000年の歴史と浮き沈み</span><br><span class="d">フェニキア人からルマサ事件まで</span></span></a>
+      <a href="#w3"><span class="n">3</span><span><span class="badge">気候</span><span class="t">気候と2つの風</span><br><span class="d">ポニエンテとレバンテ</span></span></a>
+      <a href="#w4"><span class="n">4</span><span><span class="badge">産地</span><span class="t">産地と土壌</span><br><span class="d">マルコ・デ・ヘレス・アルバリサ</span></span></a>
+      <a href="#w5"><span class="n">5</span><span><span class="badge">品種</span><span class="t">3つの主要品種</span><br><span class="d">パロミノ・モスカテル・PX</span></span></a>
+      <a href="#w6"><span class="n">6</span><span><span class="badge">栽培</span><span class="t">栽培と収穫</span><br><span class="d">機械化・アセルピア・夜間収穫</span></span></a>
+      <a href="#w7"><span class="n">7</span><span><span class="badge">醸造</span><span class="t">圧搾と発酵</span><br><span class="d">プリメラ・イエマとセグンダ・イエマ</span></span></a>
+      <a href="#w8"><span class="n">8</span><span><span class="badge">醸造</span><span class="t">分類と酒精強化</span><br><span class="d">15%か17%かで運命が決まる</span></span></a>
+      <a href="#w9"><span class="n">9</span><span><span class="badge">熟成</span><span class="t">熟成の場所とボデガ</span><br><span class="d">ブッタと厚い壁・高い天井の建物</span></span></a>
+      <a href="#w10"><span class="n">10</span><span><span class="badge">熟成</span><span class="t">ソレラ・システム</span><br><span class="d">分別ブレンドのしくみ</span></span></a>
+      <a href="#w11"><span class="n">11</span><span><span class="badge">熟成</span><span class="t">生物学的熟成と酸化熟成</span><br><span class="d">フロールの働き</span></span></a>
+      <a href="#w12"><span class="n">12</span><span><span class="badge">スタイル</span><span class="t">辛口シェリー</span><br><span class="d">フィノ・マンサニーリャ・アモンティリャード・パロ・コルタド・オロロソ</span></span></a>
+      <a href="#w13"><span class="n">13</span><span><span class="badge">スタイル</span><span class="t">甘口シェリーと熟成年数表示</span><br><span class="d">PX・モスカテル・クリーム・VOS／VORS</span></span></a>
+      <a href="#w14"><span class="n">14</span><span><span class="badge">ビジネス</span><span class="t">業界構造と統制委員会</span><br><span class="d">3種類のボデガ</span></span></a>
+      <a href="#w15"><span class="n">15</span><span><span class="badge">ビジネス</span><span class="t">販売と市場</span><br><span class="d">量は減少、高級品は好調</span></span></a>
+      <a href="#w16"><span class="n">16</span><span><span class="badge">まとめ</span><span class="t">これだけは覚えよう10</span><br><span class="d">試験前の総復習</span></span></a>
+    </div>
+  </div>
+</section>
+
+<section class="page" id="w1" data-tab="🥂概要">
+  <div class="card">
+    <span class="no">No.1</span>
+    <div class="ttl serif">🥂 シェリーってどんなワイン？</div>
+    <div class="en">What is Sherry?</div>
+    <p class="big" style="margin-top:12px">スペイン南部ヘレス周辺で造られる、辛口から極甘口まである酒精強化ワイン</p>
+    <h3 class="sec">✨ 4つの特徴</h3>
+    <ul class="dot">
+      <li>ベースはほぼ<b>パロミノ</b>という個性の少ないブドウ。風味のほとんどは<b>熟成</b>から生まれる</li>
+      <li>辛口は<b>発酵を最後まで終えてから</b>酒精強化する（ポートは発酵途中）</li>
+      <li>酵母の膜「<b>フロール</b>」の下で熟成する<b>生物学的熟成</b>と、空気に触れさせる<b>酸化熟成</b>がある</li>
+      <li>ほとんどがノン・ヴィンテージ。<b>ソレラ・システム</b>で古いワインと若いワインを少しずつ混ぜる</li>
+    </ul>
+    <div class="note sub">補足：マデイラは「加熱＋酸化」、ポートは「抽出＋熟成方法」、シェリーは「フロールの有無＋ソレラ」がスタイルを決めるカギです。</div>
+    <h3 class="sec">🌍 産地</h3>
+    <div class="kv">
+      <b>📍 場所</b><span>スペイン・アンダルシア州、ヘレス・デ・ラ・フロンテラ周辺（北緯36°、標高0〜90m）</span>
+      <b>🏘️ 3つの町</b><span>ヘレス・デ・ラ・フロンテラ、エル・プエルト・デ・サンタ・マリア、サンルーカル・デ・バラメダ</span>
+      <b>🏷️ 2つのDO</b><span>DO Jerez-Xérès-Sherry／DO Manzanilla – Sanlúcar de Barrameda</span>
+    </div>
+    <div class="foot">1 / 16</div>
+  </div>
+</section>
+
+<section class="page" id="w2" data-tab="📜歴史">
+  <div class="card">
+    <span class="no">No.2</span>
+    <div class="ttl serif">📜 歴史：3,000年の歴史と浮き沈み</div>
+    <div class="en">History</div>
+    <div class="tl">
+      <div><b>紀元前1000年頃</b>フェニキア人が定住し、ブドウ栽培とワイン造りが始まる（シェリーの最初の記録は紀元前100年）</div>
+      <div><b>8〜13世紀</b>イスラム教徒の支配で飲酒は禁止。ただし栽培と醸造は続いた</div>
+      <div><b>13世紀〜</b>キリスト教の支配下に。英国・アイルランド・フランドルの商人が輸出し急成長</div>
+      <div><b>1500年頃</b>英仏との自由貿易協定。コロンブスの航海後、アメリカ大陸にも大量輸出</div>
+      <div><b>1800年代</b>半島戦争、フィロキセラで大打撃。落ち着いた時期には有力なシッパーが誕生</div>
+      <div><b>1933年</b>他国の粗悪な「シェリー」に対抗し、スペイン初のワイン統制委員会 <b>Consejo Regulador</b> 設立</div>
+      <div><b>1979年</b>出荷量がピーク（150万hL）。その後10年で半減</div>
+      <div><b>1970年代後半〜1983年</b>ルマサ（Rumasa）が業界を支配し、安値路線で価格を下げる → 1983年に国有化。多くのボデガが閉鎖・売却・合併</div>
+      <div><b>1980年代〜</b>統制委員会が畑・在庫・販売のバランス回復と品質向上を進める</div>
+      <div><b>2021年</b>新しい規則：パゴ（畑名）表示、熟成地の拡大、エン・ラマの定義など</div>
+    </div>
+    <div class="note">💡 ルマサは英国の Harveys の「Bristol Cream」の大口供給元として巨大化した。安いシェリーの大量生産が、その後数十年の業界の重荷になった。</div>
+    <div class="foot">2 / 16</div>
+  </div>
+</section>
+
+<section class="page" id="w3" data-tab="🌬️気候">
+  <div class="card">
+    <span class="no">No.3</span>
+    <div class="ttl serif">🌬️ 気候と2つの風</div>
+    <div class="en">Climate</div>
+    <ul class="dot">
+      <li><b>暑い地中海性気候</b>：夏は暑く乾燥、冬は穏やかでやや雨が多い</li>
+      <li>雲のない日が多く日照時間が長い → 完熟しやすいが、日焼けの危険も</li>
+    </ul>
+    <div class="vs" style="margin-top:12px">
+      <div class="box"><h4>🌊 ポニエンテ<br><span class="en">Poniente</span></h4><ul class="dot"><li>大西洋からの涼しく湿った西風</li><li>夏の<b>熟成（特にフロール）</b>に大切</li></ul></div>
+      <div class="box"><h4>🏜️ レバンテ<br><span class="en">Levante</span></h4><ul class="dot"><li>約100km南の北アフリカからの熱く乾いた風</li><li>ブドウの水分が抜けて糖が濃くなりすぎると、辛口まで発酵させにくくなり、フロールの生育にも不利</li></ul></div>
+    </div>
+    <div class="foot">3 / 16</div>
+  </div>
+</section>
+
+<section class="page" id="w4" data-tab="🪨産地・土壌">
+  <div class="card">
+    <span class="no">No.4</span>
+    <div class="ttl serif">🪨 産地と土壌</div>
+    <div class="en">Production Zone & Soils</div>
+    <h3 class="sec">🗺️ 生産地域</h3>
+    <div class="kv">
+      <b>📏 範囲</b><span>約7,000haの「Zona de Producción（マルコ・デ・ヘレス）」。2つのDOとシェリー・ヴィネガー共通</span>
+      <b>⚠️ 例外</b><span>PXだけは区域外の<b>モンティーリャ</b>（コルドバ県）で栽培し、DO Jerez のワインに使える</span>
+      <b>📍 パゴ</b><span>区域内の小さな区画。向き・場所・土の違いで個性が異なる。2021年からラベルに表示可</span>
+    </div>
+    <h3 class="sec">🪨 土壌</h3>
+    <div class="vc"><h4>⚪ アルバリサ<span class="en">Albariza</span></h4>
+      <div class="chips"><span class="chip">石灰・シリカ・粘土</span><span class="chip">ほとんどの畑がこれ</span></div>
+      <ul class="dot">
+        <li>約3,000万年前の水生微生物の殻からできた石灰質。穴が多く<b>スポンジのように雨を蓄え</b>、乾いた生育期に少しずつ放出</li>
+        <li>乾くと表面に<b>固い膜</b>ができ、蒸発を防ぐ</li>
+        <li>保水力のおかげで、スペインの他の暑い産地より植栽密度・収量を高くできる（ヘレス 3,500〜4,000本/ha・平均70hL/ha、ラ・マンチャ 1,000〜2,000本/ha・45hL/ha）</li>
+        <li>白い土が日光を反射して成熟を助ける。房は葉で日差しから守る</li>
+      </ul></div>
+    <div class="kv">
+      <b>🟤 バロ</b><span>Barros。粘土が多い土</span>
+      <b>🟡 アレナ</b><span>Arenas。砂質の土（チピオナ周辺など）</span>
+    </div>
+    <div class="note">💡 シェリーの風味は主に熟成から生まれるため、ブドウに強い凝縮感は不要。だから比較的高い収量でも問題ない。</div>
+    <div class="foot">4 / 16</div>
+  </div>
+</section>
+
+<section class="page" id="w5" data-tab="🍇品種">
+  <div class="card">
+    <span class="no">No.5</span>
+    <div class="ttl serif">🍇 3つの主要品種</div>
+    <div class="en">Grape Varieties</div>
+    <div class="vc"><h4>🟢 パロミノ<span class="en">Palomino（Palomino Fino / Listán）</span></h4>
+      <div class="chips"><span class="chip">🥇 畑の97%</span><span class="chip">辛口・甘味付けタイプの大半</span></div>
+      <ul class="dot"><li>中〜晩熟。乾燥に強く、日差しの強い気候向き。多収</li><li><b>ニュートラル</b>（品種の香りが少ない）なのが長所</li><li>熟す直前に酸が急に下がるので注意が必要</li></ul></div>
+    <div class="vc"><h4>🟢 モスカテル<span class="en">Moscatel（Muscat of Alexandria）</span></h4>
+      <div class="chips"><span class="chip">別名 モスカテル・デ・チピオナ</span></div>
+      <ul class="dot"><li>海沿いの町チピオナ周辺の砂質土壌で栽培</li><li>晩熟、暑さと乾燥に強い</li><li>オレンジの花やブドウの香りがするアロマティック品種 → 同名の甘口に</li></ul></div>
+    <div class="vc"><h4>🟢 ペドロ・ヒメネス（PX）<span class="en">Pedro Ximénez</span></h4>
+      <div class="chips"><span class="chip">区域内の生産量は1%未満</span></div>
+      <ul class="dot"><li>極甘口の「PX」と、他のシェリーの<b>甘味付け</b>に使う</li><li>小粒で皮が薄く、房を<b>天日干し</b>して糖を凝縮しやすい</li><li>ニュートラル品種 → 風味は乾燥と熟成から</li><li>モンティーリャから生ブドウ・干しブドウ、多くは若いワインとして運ばれる</li></ul></div>
+    <p style="font-size:14px">残り3%はモスカテルとPXで半分ずつ。新規則で、フィロキセラ以前に栽培されていた<b>6品種</b>も導入可能に。</p>
+    <div class="foot">5 / 16</div>
+  </div>
+</section>
+
+<section class="page" id="w6" data-tab="🌱栽培">
+  <div class="card">
+    <span class="no">No.6</span>
+    <div class="ttl serif">🌱 栽培と収穫</div>
+    <div class="en">Vineyard Management</div>
+    <div class="kv">
+      <b>🚜 機械化</b><span>剪定・収穫・土壌管理まで機械化に向けて畑を改造中</span>
+      <b>✂️ 仕立て</b><span>伝統は株仕立て・長梢剪定の「ヴァラ・イ・プルガール」。今はコルドン＋短梢が増加（冬の剪定も機械化可）。どちらも垣根（VSP）</span>
+      <b>📉 収量</b><span>上限80hL/ha、実際は60〜70hL/ha</span>
+      <b>💧 アセルピア</b><span>収穫後、等高線に沿って溝を掘り、雨水の流出を防いで地中にしみ込ませる（春に戻す）。斜面は10〜15%のゆるやかな丘</span>
+      <b>🌿 台木</b><span>333EM、41B、13-5 EVEX。地元開発の13-5 EVEXは石灰に強く（クロロシス防止）乾燥にも強い</span>
+      <b>🦠 病害虫</b><span>乾燥しているので病気は少なめ。春の雨後のうどんこ病、害虫のヨーロッパブドウガ（フェロモン・トラップで対策）</span>
+    </div>
+    <h3 class="sec">🧺 収穫</h3>
+    <ul class="dot">
+      <li>春霜の心配はない。収穫は<b>8月第1週ごろ</b>から内陸の暑い畑で始まり、9月第2週までに海沿いで終わる</li>
+      <li>秋雨を避けてできるだけ早く。カビは厳禁（特に生物学的熟成用）</li>
+      <li>目安：潜在アルコール約12%、総酸約5g/L、pH 3.3〜3.5。酸が5g/Lを大きく下回れば補酸</li>
+      <li>約60%が機械収穫。酸化や微生物を防ぐため<b>夜〜早朝</b>に</li>
+      <li>天然甘口用のPX・モスカテルはやや遅めに収穫（糖が多いほど乾燥が早い）</li>
+    </ul>
+    <div class="foot">6 / 16</div>
+  </div>
+</section>
+<section class="page" id="w7" data-tab="🍇圧搾・発酵">
+  <div class="card">
+    <span class="no">No.7</span>
+    <div class="ttl serif">🍇 圧搾と発酵</div>
+    <div class="en">Pressing & Fermentation</div>
+    <h3 class="sec">🗜️ 圧搾：搾り方でスタイルが変わる</h3>
+    <p style="font-size:14px">果皮との接触は避ける（フェノール類がフロールの生育を妨げるため）。ブドウは届いたらすぐ圧搾。</p>
+    <div class="tw"><table>
+      <tr><th>果汁</th><th>特徴</th><th>主な用途</th></tr>
+      <tr><td><b>フリーラン＋プリメラ・イエマ</b><br>（最初の軽い搾り）</td><td>フェノールが少ない</td><td>生物学的熟成（フィノ・マンサニーリャ）</td></tr>
+      <tr><td><b>セグンダ・イエマ</b><br>（強めの圧力）</td><td>フェノールが多く、フロールが育ちにくい</td><td>オロロソ</td></tr>
+      <tr><td><b>プレンサ</b><br>（最後の搾り）</td><td>―</td><td>新しい樽で発酵させて樽を慣らし、そのワインは蒸留してスピリッツに</td></tr>
+    </table></div>
+    <ul class="dot">
+      <li>フリーラン＋1番搾りは全体の60〜75% → オロロソ中心の生産者（例：Fundador）はフリーランをオロロソにも使う</li>
+      <li>果汁の上限：ブドウ100kgあたり70L</li>
+    </ul>
+    <h3 class="sec">🧪 発酵</h3>
+    <ul class="dot">
+      <li>アルバリサの土ぼこりを除くため、発酵前に<b>清澄</b>（沈殿・遠心分離・浮上法）。補酸もこの時に</li>
+      <li>畑ごとに分けて発酵し、多くのベースワインを用意</li>
+      <li><b>培養酵母</b>で<b>22〜26℃</b>が一般的 → 確実に辛口まで発酵させる（香りは熟成で生まれるので、やや高めの温度でもよい）</li>
+      <li>多くはステンレス。一部は古樽で発酵してボディを出す</li>
+      <li>最初の7日で糖の大半が発酵し、残りは数週間かけてゆっくり</li>
+      <li>パロミノはリンゴ酸が特に少ないため、<b>マロラクティック発酵は起きない</b></li>
+    </ul>
+    <div class="foot">7 / 16</div>
+  </div>
+</section>
+
+<section class="page" id="w8" data-tab="🔀分類・酒精強化">
+  <div class="card">
+    <span class="no">No.8</span>
+    <div class="ttl serif">🔀 分類と酒精強化</div>
+    <div class="en">Classification & Fortification</div>
+    <div class="note"><b>💡 ポイント</b><br>フロールは<b>15.5%以下</b>なら育ち、<b>16%を超えると生きられない</b>。だから酒精強化の度数で熟成のルートが決まる。</div>
+    <h3 class="sec">1️⃣ 第1分類（発酵後）</h3>
+    <div class="vs">
+      <div class="box"><h4>🌼 生物学的熟成へ</h4><ul class="dot"><li>軽く、風味が穏やかなワイン</li><li><b>15〜15.5%</b>に強化（フロールに最適）</li></ul></div>
+      <div class="box"><h4>🍂 酸化熟成へ</h4><ul class="dot"><li>ボディがあり、風味が強いワイン</li><li><b>17%</b>に強化（フロールは育たない）→ オロロソのソレラへ</li></ul></div>
+    </div>
+    <ul class="dot" style="margin-top:10px">
+      <li>強化には<b>95%のブドウ・スピリッツ</b>（ニュートラルで香りを足さない）</li>
+      <li>2021年規則：自然に15%に達したベースワインは強化しなくてもよい（EUの承認待ち）</li>
+      <li>強化後のワインは「<b>ソブレタブラス</b>」と呼ばれ、その年の単一ヴィンテージ。タンクや樽で待機してからソレラへ</li>
+    </ul>
+    <h3 class="sec">2️⃣ 第2分類（数か月後）</h3>
+    <div class="kv">
+      <b>🌼 フィノ／マンサニーリャ候補</b><span>フロールがしっかり張り、フレッシュさを保ったもの。のちにアモンティリャードのソレラへ移ることも</span>
+      <b>✂️ パロ・コルタド候補</b><span>やや繊細さに欠けるもの → 17%に再強化して酸化熟成</span>
+    </div>
+    <h3 class="sec">🍯 甘口シェリーの造り</h3>
+    <div class="vs">
+      <div class="box"><h4>天然甘口（PX・モスカテル）</h4><ul class="dot"><li>甘味料は加えない</li><li>ブドウを<b>2〜3週間天日干し</b> → 糖が凝縮し、レーズンの香り</li><li>糖が多すぎて発酵は4〜6%で自然に止まる → 15〜16%に強化</li><li>専用のソレラで酸化熟成。蒸発でさらに凝縮</li></ul></div>
+      <div class="box"><h4>甘味付け（クリームなど）</h4><ul class="dot"><li>辛口に発酵・強化したパロミノを熟成（生物学的・酸化・両方）</li><li>PXなどで甘くする</li><li>安価品：若いワインを瓶詰め直前に甘くする</li><li>中〜高価格：甘くしてから専用ソレラでさらに熟成（例：Gonzalez Byass Matusalem VORS は平均30年）</li></ul></div>
+    </div>
+    <div class="foot">8 / 16</div>
+  </div>
+</section>
+
+<section class="page" id="w9" data-tab="🏛️ボデガ">
+  <div class="card">
+    <span class="no">No.9</span>
+    <div class="ttl serif">🏛️ 熟成の場所とボデガ</div>
+    <div class="en">Where Sherry Matures</div>
+    <h3 class="sec">📍 熟成できる場所</h3>
+    <div class="kv">
+      <b>以前</b><span>DO Jerez は3つの町（ヘレス、エル・プエルト、サンルーカル＝「Zona de Crianza」）でのみ熟成可</span>
+      <b>2021年〜</b><span>生産地域内ならどこでも熟成可</span>
+      <b>マンサニーリャ</b><span>必ずサンルーカル・デ・バラメダで熟成</span>
+      <b>瓶詰め</b><span>すべてのシェリーは3つの町で瓶詰め・包装</span>
+    </div>
+    <h3 class="sec">🛢️ 樽：ブッタ（Butt）</h3>
+    <ul class="dot">
+      <li>主に<b>600Lのアメリカンオーク</b>（1500年代の征服の歴史から。フレンチオークより安い）</li>
+      <li>新樽の香りは不要なので<b>とても古い樽</b>を使う</li>
+      <li>生物学的熟成ではフロールのために約500Lだけ入れる（85〜90%）</li>
+    </ul>
+    <h3 class="sec">🏠 ボデガ（熟成庫）の工夫</h3>
+    <ul class="dot">
+      <li><b>厚い壁</b>で温度を一定に</li>
+      <li><b>高い天井</b>で暖かい空気を上へ逃がす。樽は3〜4段まで</li>
+      <li>屋根近くの<b>小さな窓</b>から大西洋の涼しく湿った南西風を入れる。薄いブラインドで日差し・ほこり・虫を防ぐ</li>
+      <li><b>土の床</b>に夏は水をまいて温度を下げ、湿度を上げる</li>
+    </ul>
+    <div class="note">それでも夏と冬で条件は変わるため、フロールは一年中同じ厚さを保てないことが多い。</div>
+    <div class="foot">9 / 16</div>
+  </div>
+</section>
+
+<section class="page" id="w10" data-tab="🔁ソレラ">
+  <div class="card">
+    <span class="no">No.10</span>
+    <div class="ttl serif">🔁 ソレラ・システム</div>
+    <div class="en">The Solera System</div>
+    <p class="big" style="margin-top:8px">古いワインに若いワインを少しずつ継ぎ足していく「分別ブレンド」</p>
+    <h3 class="sec">🧱 しくみ</h3>
+    <div class="kv">
+      <b>ソレラ</b><span>最も古いワインの樽の段</span>
+      <b>クリアデラ</b><span>熟成段階ごとの樽のグループ。ソレラの次に古いのが第1クリアデラ、次が第2…</span>
+    </div>
+    <div class="tl" style="margin-top:12px">
+      <div><b>① ソレラから抜く</b>ソレラの各樽から一部を抜き、ブレンド・瓶詰めへ</div>
+      <div><b>② 第1クリアデラ → ソレラ</b>同じ量を第1クリアデラから抜き、タンクで混ぜてからソレラに補充</div>
+      <div><b>③ 第2 → 第1</b>第2クリアデラから抜いて第1クリアデラに補充</div>
+      <div><b>④ 繰り返し</b>最も若いクリアデラには、ソブレタブラス（その年の新酒）を補充</div>
+    </div>
+    <h3 class="sec">📏 ルール</h3>
+    <ul class="dot">
+      <li>1年に抜けるのはソレラ全体の<b>40%まで</b> → いつも大部分のワインが残る</li>
+      <li>販売するワインは<b>最低2年</b>熟成</li>
+    </ul>
+    <h3 class="sec">🎛️ 応用</h3>
+    <ul class="dot">
+      <li>クリアデラの数は3〜4段から十数段まで。段数・抜く量と頻度で熟成年数・複雑さ・価格が決まる</li>
+      <li>途中の段から早めに抜いてもよい：安いフィノは第4・5クリアデラ中心に第1を少し、高級フィノはソレラと第1が多め＋若いワインを少し</li>
+      <li>別のソレラとブレンドしたり、別のソレラへ移したりもできる（例：フィノのソレラで5年 → アモンティリャードのソレラで8年）</li>
+    </ul>
+    <div class="note sub">補足：古いワインが若いワインを「教育」し、毎年同じ品質・スタイルを保てるのがソレラの最大の利点です。</div>
+    <div class="foot">10 / 16</div>
+  </div>
+</section>
+
+<section class="page" id="w11" data-tab="🌼生物学的・🍂酸化">
+  <div class="card">
+    <span class="no">No.11</span>
+    <div class="ttl serif">🌼 生物学的熟成と 🍂 酸化熟成</div>
+    <div class="en">Biological & Oxidative Ageing</div>
+    <h3 class="sec">🌼 フロールが育つ条件</h3>
+    <div class="chips"><span class="chip">アルコール15.5%以下</span><span class="chip">SO₂を加えない</span><span class="chip">樽は85〜90%・栓はゆるく（酸素が必要）</span><span class="chip">16〜20℃</span><span class="chip">湿度65%以上</span></div>
+    <p style="font-size:14px">フロールは4種類の Saccharomyces cerevisiae。ヘレスのブドウの皮やボデガに住んでいて、条件がそろうと自然にワインの表面に膜を張る。</p>
+    <div class="tw"><table>
+      <tr><th></th><th>🌼 生物学的熟成</th><th>🍂 酸化熟成</th></tr>
+      <tr><td><b>色</b></td><td>酸化から守られ<b>淡いレモン色</b></td><td>レモン → 金 → 琥珀 → <b>褐色</b></td></tr>
+      <tr><td><b>アルコール</b></td><td>フロールが消費し<b>下がる</b></td><td>水分が先に蒸発し<b>少し上がる</b>（年3〜5%の量が減る）</td></tr>
+      <tr><td><b>アセトアルデヒド</b></td><td><b>増える</b> → リンゴ・リンゴの皮・干し草・カモミール、やや苦み</td><td>少し減る</td></tr>
+      <tr><td><b>グリセリン</b></td><td>フロールが消費 → <b>軽いボディ</b>、とても辛口</td><td>濃縮 → <b>ふくよかで丸いボディ</b></td></tr>
+      <tr><td><b>酢酸</b></td><td>減る</td><td>酢酸・酢酸エチル（揮発酸）が少し増える</td></tr>
+      <tr><td><b>その他の香り</b></td><td>死んだ酵母の自己分解でナッツ・旨み。青リンゴ・パン・チーズ</td><td>カラメル・ナッツなどの熟成香</td></tr>
+    </table></div>
+    <h3 class="sec">🔁 フロールとソレラの関係</h3>
+    <ul class="dot">
+      <li>若いワインにはフロールの栄養（アルコール・グリセリン・酢酸）が豊富 → 継ぎ足しで栄養を補給し、厚い膜を保つ</li>
+      <li>フィノやマンサニーリャは<b>少量ずつ頻繁に</b>抜く。店頭で新鮮なうちに飲めるように（瓶熟成で良くならず、早く飲むべき）</li>
+    </ul>
+    <h3 class="sec">📦 瓶詰め前の仕上げ</h3>
+    <ul class="dot">
+      <li>多くは酒石安定化・清澄・ろ過。生物学的熟成のものはフロールを除くためろ過が特に重要</li>
+      <li>栓はコルク、T字栓、スクリューキャップ</li>
+    </ul>
+    <div class="foot">11 / 16</div>
+  </div>
+</section>
+<section class="page" id="w12" data-tab="🍸辛口">
+  <div class="card">
+    <span class="no">No.12</span>
+    <div class="ttl serif">🍸 辛口シェリー（ビノス・ヘネロソス）</div>
+    <div class="en">Dry Sherries — Vinos Generosos</div>
+    <p class="intro">残糖は最大4g/L（12年超のものは9g/L）。各スタイルは統制委員会の基準（残糖・度数・色など）を満たす必要がある。</p>
+    <div class="scale">
+      <div style="background:#d9c27a;color:#3a2a05">フィノ<br>マンサニーリャ</div>
+      <div style="background:#c08a2e">アモンティ<br>リャード</div>
+      <div style="background:#9a6418">パロ・<br>コルタド</div>
+      <div style="background:#5e3608">オロロソ</div>
+    </div>
+    <p style="font-size:12px;color:var(--sub);text-align:center">← 生物学的熟成 ／ 両方 ／ 酸化熟成 →</p>
+
+    <div class="vc"><h4>🌼 フィノ／マンサニーリャ<span class="en">Fino / Manzanilla</span></h4>
+      <div class="chips"><span class="chip">すべてフロールの下で熟成</span><span class="chip">15〜15.5%</span></div>
+      <div class="kv"><b>👁️ 外観</b><span>淡いレモン</span><b>👃 香り</b><span>🍏🍞🌰 アセトアルデヒド由来の香り（リンゴ・干し草など）、パン生地、アーモンド</span><b>👅 味わい</b><span>辛口、ライト〜ミディアムボディ、酸もアルコールも低め</span><b>💴 価格</b><span>安価〜プレミアム、超プレミアムも</span></div>
+      <h3 class="sec">🌊 マンサニーリャとフィノの違い</h3>
+      <ul class="dot"><li>マンサニーリャは海沿いの<b>サンルーカル・デ・バラメダ</b>で熟成。夏冬の差が小さく湿度が高い → フロールが<b>厚く安定</b></li><li>ヘレスでは夏と冬にフロールが薄くなる</li><li>アセトアルデヒドを多く出す菌株がサンルーカルにはいない → マンサニーリャは<b>より軽くフレッシュ</b></li><li>栄養補給のため、少量をより頻繁に抜いて瓶詰め</li></ul></div>
+
+    <div class="vc"><h4>🕰️ フィノ・ビエホ／マンサニーリャ・パサダ<span class="en">Fino Viejo / Manzanilla Pasada</span></h4>
+      <p style="font-size:14px">生物学的熟成で<b>平均7年以上</b>。約1年継ぎ足しをやめてフロールを自然に死なせ、専用ソレラへ移すこともある。</p></div>
+
+    <div class="vc"><h4>🌼→🍂 アモンティリャード<span class="en">Amontillado</span></h4>
+      <div class="chips"><span class="chip">生物学的＋酸化の両方</span><span class="chip">16%超</span></div>
+      <ul class="dot"><li>まずフィノのソレラで熟成 → フロールが尽きるのを待つか、<b>17%に再強化</b>してフロールを死なせる → アモンティリャードのソレラで酸化熟成</li><li>各段階の期間は決まっていない（生物学的8年＋酸化2年でも、その逆でも同じ名前。でも味は大きく違う）</li></ul>
+      <div class="kv"><b>👃 香り</b><span>🍎🌰🍞 リンゴ・アーモンド・焼きたてパン（フロール）＋🌿🚬 スパイス・ハーブ・タバコ（酸化）</span><b>👅 味わい</b><span>完全な辛口。グリセリンが少なく軽めのボディ</span><b>💴 価格</b><span>安価品は若いフィノを短く熟成。長期熟成品は中価格〜超プレミアム</span></div></div>
+
+    <div class="vc"><h4>✂️ パロ・コルタド<span class="en">Palo Cortado</span></h4>
+      <div class="chips"><span class="chip">残糖5g/L未満</span><span class="chip">17〜22%</span></div>
+      <ul class="dot"><li>生物学的熟成用に選ばれたが、第2分類でフロールが十分育たなかったワイン（フィノ品質のプリメラ・イエマ）を、17%に再強化して酸化熟成</li><li>定義：「<b>香りはアモンティリャード、味わいはオロロソ</b>」に近い</li><li>フロールの期間が短いので、アセトアルデヒドは控えめ、グリセリンは多め → アモンティリャードよりややふくよか</li><li>多くはプレミアム価格、非常に良い〜卓越した品質</li></ul></div>
+
+    <div class="vc"><h4>🍂 オロロソ<span class="en">Oloroso</span></h4>
+      <div class="chips"><span class="chip">酸化熟成のみ</span><span class="chip">最終 18〜22%</span></div>
+      <div class="kv"><b>🛢️ 造り</b><span>発酵後に17%以上に強化し、フロールを育てない</span><b>👁️ 外観</b><span>褐色</span><b>👃 香り</b><span>🍇🍮🌰 レーズン・プルーン、カラメル、クルミ</span><b>💴 価格</b><span>早く抜いたものは手頃。長期熟成品は非常に良い〜卓越、プレミアム</span></div></div>
+
+    <div class="vc"><h4>🛢️ エン・ラマ<span class="en">En Rama</span></h4>
+      <ul class="dot"><li>「樽から出したままに近い」状態で瓶詰め。2021年に初めて法的に定義</li><li>ろ過はしてもよいが、清澄・コールドスタビライゼーションなどはしない（ろ過もしない蔵も）。輸出品はフロールを除くため軽くろ過することが多い</li><li>どの辛口にも使えるが、実際は<b>フィノ・エン・ラマ</b>が最も一般的。より濃く複雑で高価</li></ul></div>
+    <div class="foot">12 / 16</div>
+  </div>
+</section>
+
+<section class="page" id="w13" data-tab="🍯甘口・年数表示">
+  <div class="card">
+    <span class="no">No.13</span>
+    <div class="ttl serif">🍯 甘口シェリーと熟成年数表示</div>
+    <div class="en">Sweet Sherries & Age Indications</div>
+    <h3 class="sec">🍇 天然甘口（ビノス・ドゥルセス・ナトゥラレス）</h3>
+    <div class="tw"><table>
+      <tr><th></th><th>ペドロ・ヒメネス（PX）</th><th>モスカテル</th></tr>
+      <tr><td><b>最低残糖</b></td><td>212g/L（実際は450〜500g/L）</td><td>160g/L（実際は325〜375g/L）</td></tr>
+      <tr><td><b>度数</b></td><td>15〜22%</td><td>15〜22%</td></tr>
+      <tr><td><b>スタイル</b></td><td>フルボディでシロップ状、酸は低い。レーズン・糖蜜・甘草</td><td>酸素から守る非酸化型、または樽で数年酸化熟成。どちらもモスカテルの華やかな香り</td></tr>
+      <tr><td><b>生産</b></td><td>ほとんどの生産者が造る</td><td>単一品種ははるかに少ない</td></tr>
+    </table></div>
+    <p style="font-size:14px">どちらも安価〜プレミアム、良〜卓越。甘味付けシェリーのブレンド材料にもなる。</p>
+
+    <h3 class="sec">🥄 甘味付けシェリー</h3>
+    <div class="tw"><table>
+      <tr><th>スタイル</th><th>糖分</th><th>ベース</th><th>甘味料</th><th>特徴</th></tr>
+      <tr><td><b>ペール・クリーム</b></td><td>45〜115g/L</td><td>生物学的熟成のワイン</td><td>RCGM（色や風味を足さない）</td><td>ごく軽いフロールの風味。中甘口〜甘口。多くは安価</td></tr>
+      <tr><td><b>ミディアム</b></td><td>約5〜115g/L</td><td>ほぼ生物学的＋酸化のブレンド</td><td>主にPX（RCGMも）</td><td>安価〜プレミアム</td></tr>
+      <tr><td><b>クリーム</b></td><td>115〜140g/L</td><td>ほぼオロロソ</td><td>主にPX（RCGMも）</td><td>安価〜プレミアム</td></tr>
+    </table></div>
+    <div class="note sub">補足：ミディアムの糖分は、教材の本文では「4〜115g/L」、スタイル表では「5〜115g/L」と記載が分かれています。</div>
+    <p style="font-size:14px">高級品ほど、よく熟成したアモンティリャード・オロロソ・PXの割合が高い。</p>
+
+    <h3 class="sec">🏅 熟成年数表示</h3>
+    <div class="tw"><table>
+      <tr><th>表示</th><th>平均熟成年数</th><th>審査</th></tr>
+      <tr><td><b>VOS</b><br>Very Old Sherry</td><td>20年以上</td><td rowspan="2">出荷する<b>ロットごと</b>に試飲審査・分析。在庫の一定割合しか売れない割当制。渋みを和らげるため少量の甘口（主にPX）を加えてもよい</td></tr>
+      <tr><td><b>VORS</b><br>Very Old Rare Sherry</td><td>30年以上</td></tr>
+      <tr><td><b>12年／15年</b></td><td>12年／15年</td><td>試飲・分析・割当制。ただし<b>ソレラ全体</b>で審査</td></tr>
+    </table></div>
+    <p style="font-size:14px">VOS・VORSはごく少量で、非常に良い〜卓越した品質。プレミアム〜超プレミアム価格。</p>
+    <div class="foot">13 / 16</div>
+  </div>
+</section>
+
+<section class="page" id="w14" data-tab="🏢業界">
+  <div class="card">
+    <span class="no">No.14</span>
+    <div class="ttl serif">🏢 業界構造と統制委員会</div>
+    <div class="en">Wine Law & Wine Business</div>
+    <h3 class="sec">👨‍🌾 畑の所有</h3>
+    <div class="kv">
+      <b>📏 面積</b><span>7,142ha（2020年）、平均3ha強</span>
+      <b>🤝 協同組合員</b><span>47%</span>
+      <b>🏢 シッパー</b><span>31%（Gonzalez Byass、Barbadillo、Estevez Group などは大きな畑を持つが、自給できず買い付けも）</span>
+      <b>👨‍🌾 独立栽培者</b><span>22%</span>
+    </div>
+    <h3 class="sec">🏭 3種類のボデガ（複数に登録も可）</h3>
+    <div class="vc"><h4>① 生産ボデガ<span class="en">Bodegas de la Zona de Producción</span></h4><ul class="dot"><li>大きな協同組合など。圧搾・発酵でベースワインを造り、スタイルによっては酒精強化も</li><li>熟成ボデガにベースワインを売る。2021年から自社ワインも熟成・DO表示可能に</li></ul></div>
+    <div class="vc"><h4>② 熟成・貯蔵ボデガ（アルマセニスタ）<span class="en">Bodegas de Crianza y Almacenado</span></h4><ul class="dot"><li>小規模で熟成（必要なら強化）だけを行う</li><li>熟成したワインは③に売る</li><li>販売減少で多くが廃業。1996年、シッパー登録の最低在庫が12,500hL → 500hLに下がり、El Maestro Sierra や Bodegas Tradición などがシッパーに</li></ul></div>
+    <div class="vc"><h4>③ 熟成・出荷ボデガ（シッパー）<span class="en">Bodegas de Crianza y Expedición</span></h4><ul class="dot"><li><b>瓶詰めしたDOシェリーを販売できる唯一の業者</b></li><li>①から若いワイン、②から熟成ワインを仕入れ、自社在庫とブレンド。通常は自社ブランドで販売</li><li>例外：Lustau の「アルマセニスタ・シリーズ」はラベルに個々のアルマセニスタ名を表示</li></ul></div>
+    <h3 class="sec">🏛️ 統制委員会（Consejo Regulador）</h3>
+    <ul class="dot">
+      <li>1933年、スペインで最初に登録された統制委員会</li>
+      <li>畑とボデガの登録、最大収量・ベースワインの最低度数の設定、在庫の回転の監督、年数表示の認証</li>
+      <li>International Sherry Week や専門家向け講座などの販促</li>
+      <li>1990年代半ば、EU内で「Sherry」の名前を2つのDOだけに限定させた（それまでは白ブドウの酒精強化ワインの総称だった）</li>
+    </ul>
+    <div class="foot">14 / 16</div>
+  </div>
+</section>
+
+<section class="page" id="w15" data-tab="📊販売">
+  <div class="card">
+    <span class="no">No.15</span>
+    <div class="ttl serif">📊 販売と市場</div>
+    <div class="en">Sherry Sales</div>
+    <div class="kv">
+      <b>📈 ピーク</b><span>1970年代後半 約1億5,000万L</span>
+      <b>📉 2023年</b><span>2,580万L（15年前は4,600万L）</span>
+    </div>
+    <h3 class="sec">🥄 スタイル別の変化（2006年 → 2023年）</h3>
+    <div class="tw"><table>
+      <tr><th>スタイル</th><th>2006年</th><th>2023年</th></tr>
+      <tr><td><b>甘味付け合計</b></td><td>2,840万L</td><td>1,280万L（半分以下）</td></tr>
+      <tr><td>　クリーム</td><td>1,250万L</td><td>540万L</td></tr>
+      <tr><td>　ミディアム</td><td>1,180万L</td><td>420万L</td></tr>
+      <tr><td>　ペール・クリーム</td><td>410万L</td><td>180万L（輸出の90%が英国）</td></tr>
+      <tr><td><b>フィノ</b></td><td>1,400万L</td><td>530万L</td></tr>
+      <tr><td><b>マンサニーリャ</b></td><td>850万L</td><td>620万L（減り方がゆるやか）</td></tr>
+    </table></div>
+    <p style="font-size:14px">パロ・コルタド、PX、年数表示シェリーは量は少ないが、シッパーにとって価値が高く利益の出る商品に。</p>
+    <h3 class="sec">🌍 主要市場（2023年）</h3>
+    <div class="tw"><table>
+      <tr><th>順位</th><th>市場</th><th>販売量</th><th>特徴</th></tr>
+      <tr><td>1</td><td>🇪🇸 スペイン国内</td><td>1,150万L（44%）</td><td>5年間安定。人気はマンサニーリャ、次いでフィノ</td></tr>
+      <tr><td>2</td><td>🇬🇧 英国</td><td>690万L</td><td>最大の輸出市場。大半が甘味付け</td></tr>
+      <tr><td>3</td><td>🇳🇱 オランダ</td><td>250万L</td><td>―</td></tr>
+      <tr><td>4</td><td>🇩🇪 ドイツ</td><td>130万L</td><td>―</td></tr>
+    </table></div>
+    <p style="font-size:14px">輸出市場はこの10年すべて減少。一方、英国などでは高級シェリーが伸びているとの報告（モダンなタパスバー、カクテル、若い世代）。</p>
+    <h3 class="sec">🚀 新しい動き</h3>
+    <ul class="dot">
+      <li>2021年規則：自然に15%に達すれば酒精強化しないシェリーもDOで造れる</li>
+      <li>パロミノやPXの非酒精強化ワイン（フレッシュ、生物学的熟成、部分的に酸化）も造られているが、現在はどちらのDOにも属さない</li>
+    </ul>
+    <div class="foot">15 / 16</div>
+  </div>
+</section>
+
+<section class="page" id="w16" data-tab="✅まとめ">
+  <div class="card">
+    <span class="no">No.16</span>
+    <div class="ttl serif">✅ これだけは覚えよう10</div>
+    <div class="en">Key Takeaways</div>
+    <div class="list" style="margin-top:10px">
+      <a><span class="n">1</span><span>アンダルシア・ヘレス周辺の約7,000ha。DOはヘレスとマンサニーリャの2つ</span></a>
+      <a><span class="n">2</span><span>水を蓄える白い石灰質土壌アルバリサ。涼風ポニエンテと熱風レバンテ</span></a>
+      <a><span class="n">3</span><span>パロミノが97%。ニュートラルで、風味は熟成から生まれる</span></a>
+      <a><span class="n">4</span><span>辛口は発酵を終えてから95%のスピリッツで強化</span></a>
+      <a><span class="n">5</span><span>15〜15.5%＝フロールで生物学的熟成、17%＝酸化熟成</span></a>
+      <a><span class="n">6</span><span>ソレラ：古い樽から抜き若い樽から補充。年40%まで、最低2年</span></a>
+      <a><span class="n">7</span><span>フロールは酸化を防ぎ、アセトアルデヒドを増やし、グリセリンを減らす</span></a>
+      <a><span class="n">8</span><span>フィノ／マンサニーリャ → アモンティリャード → パロ・コルタド → オロロソ</span></a>
+      <a><span class="n">9</span><span>天然甘口はPXとモスカテルの天日干し。ペール・クリーム／ミディアム／クリームは甘味付け</span></a>
+      <a><span class="n">10</span><span>VOS（20年以上）・VORS（30年以上）。瓶詰めDOシェリーを売れるのはシッパーだけ</span></a>
+    </div>
+    <div class="foot">16 / 16</div>
+  </div>
+</section>
+
+<section class="page" id="tips" data-tab="📖用語集">
+  <div class="card">
+    <div class="ttl serif">📖 シェリー用語集</div>
+    <div class="en">Glossary</div>
+    <div class="vc"><h4>フロール<span class="en">Flor</span></h4><p style="font-size:14px">ワインの表面に膜を張る4種類の酵母。酸化を防ぎ、独特の香りを生む。</p></div>
+    <div class="vc"><h4>生物学的熟成 / 酸化熟成<span class="en">Biological / Oxidative Ageing</span></h4><p style="font-size:14px">フロールの下での熟成／空気に触れさせる熟成。</p></div>
+    <div class="vc"><h4>ソレラ / クリアデラ<span class="en">Solera / Criadera</span></h4><p style="font-size:14px">最も古い樽の段／熟成段階ごとの樽のグループ。</p></div>
+    <div class="vc"><h4>ソブレタブラス<span class="en">Sobretablas</span></h4><p style="font-size:14px">酒精強化したばかりの、その年の新酒。ソレラに入る前の段階。</p></div>
+    <div class="vc"><h4>ブッタ<span class="en">Butt</span></h4><p style="font-size:14px">600Lの古いアメリカンオーク樽。</p></div>
+    <div class="vc"><h4>ボデガ<span class="en">Bodega</span></h4><p style="font-size:14px">シェリーの醸造・熟成庫、またはその会社。</p></div>
+    <div class="vc"><h4>アルバリサ<span class="en">Albariza</span></h4><p style="font-size:14px">石灰・シリカ・粘土の白い土。水を蓄え、乾くと膜を作る。</p></div>
+    <div class="vc"><h4>ポニエンテ / レバンテ<span class="en">Poniente / Levante</span></h4><p style="font-size:14px">大西洋からの涼しく湿った西風／北アフリカからの熱く乾いた風。</p></div>
+    <div class="vc"><h4>パゴ<span class="en">Pago</span></h4><p style="font-size:14px">個性の異なる小さな畑の区画。2021年からラベル表示可。</p></div>
+    <div class="vc"><h4>アセルピア<span class="en">Aserpia</span></h4><p style="font-size:14px">収穫後に等高線沿いに溝を掘り、雨水をためる作業。</p></div>
+    <div class="vc"><h4>プリメラ・イエマ / セグンダ・イエマ<span class="en">Primera / Segunda Yema</span></h4><p style="font-size:14px">最初の軽い搾り（フィノ用）／強めの搾り（オロロソ用）。</p></div>
+    <div class="vc"><h4>アセトアルデヒド<span class="en">Acetaldehyde</span></h4><p style="font-size:14px">フロールが作る成分。リンゴ・干し草・カモミールのような香り。</p></div>
+    <div class="vc"><h4>エン・ラマ<span class="en">En Rama</span></h4><p style="font-size:14px">清澄や安定化をせず、樽から出したままに近い状態で瓶詰めしたシェリー。</p></div>
+    <div class="vc"><h4>アルマセニスタ<span class="en">Almacenista</span></h4><p style="font-size:14px">熟成・貯蔵だけを行い、シッパーに売る小規模ボデガ。</p></div>
+    <div class="vc"><h4>RCGM</h4><p style="font-size:14px">精留濃縮果汁。色や風味を足さずに甘くできる（ペール・クリームに使用）。</p></div>
+    <div class="vc"><h4>Consejo Regulador</h4><p style="font-size:14px">シェリーの統制委員会。1933年設立、スペイン初。</p></div>
+  </div>
+</section>
+
+<a class="home" href="#top">🏠 表紙に戻る</a>
+</main>
+<footer>出典：WSET Level 4 Diploma in Wines — D5 Fortified Wines, Chapter 3 Sherry</footer>
+<script>
+(function(){
+  var pages=[].slice.call(document.querySelectorAll('.page'));
+  var tabs=document.getElementById('tabs');
+  pages.forEach(function(p){var a=document.createElement('a');a.href='#'+p.id;a.textContent=p.dataset.tab;tabs.appendChild(a);});
+  var links=[].slice.call(tabs.children);
+  function onScroll(){
+    var y=window.scrollY+80, idx=-1;
+    pages.forEach(function(p,i){if(p.offsetTop<=y)idx=i;});
+    links.forEach(function(a,i){var on=i===idx;if(on&&!a.classList.contains('on')&&a.scrollIntoView)tabs.scrollTo({left:a.offsetLeft-tabs.clientWidth/2+a.clientWidth/2,behavior:'smooth'});a.classList.toggle('on',on);});
+  }
+  window.addEventListener('scroll',onScroll,{passive:true}); onScroll();
+})();
+</script>
+</body>
+</html>
